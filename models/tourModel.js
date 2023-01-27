@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const tourSchema = new mongoose.Schema({
     name: {
@@ -7,6 +8,7 @@ const tourSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
+    slug: String,
     duration: {
         type: Number,
         required: [true, "A tour must have a durations"]
@@ -53,8 +55,47 @@ const tourSchema = new mongoose.Schema({
         default: Date.now(),
         select: false
     },
-    startDates: [Date]
+    startDates: [Date],
+    secretTour: {
+        type: Boolean,
+        default: false
+    }
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
+
+// virtual properties are not stored in db
+tourSchema.virtual('durationWeeks').get(function () {
+    return this.duration / 7;
+});
+
+// Document middleware: only runs before .save() and .create() command
+// It doesn't work on insertMany(), findOne(), findOneAndUpdate(), findByIdAndUpdate()
+tourSchema.pre('save', function (next) {
+    // In save event this keyword refers to the document that is to be saved
+    this.slug = slugify(this.name, { lower: true });
+    next();
+})
+
+// We can have multiple middlewares for same hook. hooks ---> 'save' , 'post'
+// tourSchema.pre('save', function (next) {
+//     console.log("Will save document...");
+//     next();
+// })
+
+// Post middleware functions are executed when all pre-middlewares are executed
+// tourSchema.post('save', function (doc, next) {
+//     console.log(doc);
+//     next();
+// })
+
+// Query MiddleWare
+
+tourSchema.pre('find', function (next) {
+
+    next();
+})
 
 const Tour = mongoose.model('Tour', tourSchema);
 
