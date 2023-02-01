@@ -7,7 +7,7 @@ const userRouter = require('./routes/userRoutes');
 const app = express();
 
 // 1) MiddleWares
-if(process.env.NODE_ENV === 'development'){
+if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
@@ -17,21 +17,29 @@ app.use(express.static(`${__dirname}/public`))
 app.use(express.json());
 // Defining middleware
 // The middleware applies to each & every req
-app.use((req,res, next) => {
-    console.log("Hello from the middleware");
-    next();
-});
+// app.use((req,res, next) => {
+//     console.log("Hello from the middleware");
+//     next();
+// });
 
 // The middleware applies to each & every req
-app.use((req,res, next)=> {
+app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
     next();
 })
 
 
 // mounting routers --- router middlewares
-app.use(`/api/v1/tours`,tourRouter);
+app.use(`/api/v1/tours`, tourRouter);
 app.use(`/api/v1/users`, userRouter);
+
+app.all('*', (req, res, next) => {
+    res.status(404).json({
+        status: 'failed',
+        message: `Cam't find ${req.originalUrl}`
+    })
+    next();
+})
 
 
 module.exports = app;

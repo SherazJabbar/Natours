@@ -50,7 +50,6 @@ exports.getTour = async (req, res) => {
             message: err
         })
     }
-
 }
 
 exports.createTour = async (req, res) => {
