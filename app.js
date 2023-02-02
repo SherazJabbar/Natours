@@ -39,7 +39,12 @@ app.all('*', (req, res, next) => {
         message: `Cam't find ${req.originalUrl}`
     })
     next();
-})
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+
+});
 
 
 module.exports = app;
