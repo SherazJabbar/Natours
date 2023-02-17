@@ -2,13 +2,10 @@ const AppError = require("../utils/appError");
 
 const handleCastErrorDB = (err) => {
     const message = `Invalid ${err.path}: ${err.value}`;
-    console.log("error...!!", err)
-
     return new AppError(message, 400);
 }
 
 const sendErrorDev = (err, res) => {
-    console.log("error....", err)
     res.status(err.statusCode).json({
         status: err.status,
         error: err,
@@ -26,7 +23,6 @@ const setErrorProduction = (err, res) => {
         })
         // Programming or other unknown error: don't leak error details
     } else {
-        console.log("ERROR", err);
         res.status(500).json({
             status: 'error',
             message: "Something went very wrong!"
