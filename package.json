@@ -11,8 +11,10 @@
   "author": "Sheraz Jabbar",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.13.15",
     "morgan": "^1.10.0",
     "ndb": "^1.1.5",
