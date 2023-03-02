@@ -27,6 +27,7 @@ app.use(express.json());
 // The middleware applies to each & every req
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
+    console.log(req.headers);
     next();
 })
 
