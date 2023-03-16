@@ -32,6 +32,7 @@ app.use((req, res, next) => {
 })
 
 
+
 // mounting routers --- router middlewares
 app.use(`/api/v1/tours`, tourRouter);
 app.use(`/api/v1/users`, userRouter);
@@ -52,11 +53,10 @@ app.all('*', (req, res, next) => {
 
     // Error Implementation using AppErrorClass
 
-    next(new AppError(`Cam't find ${req.originalUrl} on this server!`, 404));
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
 // Error handling middleware
 app.use(globalErrorHandler);
-
 
 module.exports = app;

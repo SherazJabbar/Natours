@@ -14,6 +14,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     const newUser = await User.create({
         name: req.body.name,
         email: req.body.email,
+        role: req.body.role,
         password: req.body.password,
         passwordConfirm: req.body.passwordConfirm,
         passwordChangedAt: req.body.passwordChangedAt
@@ -66,10 +67,10 @@ exports.protect = catchAsync(async (req, res, next) => {
     }
 
     if (!token) {
-        return next(new AppError('You are not logged idn! Please log in to get access.', 401));
+        return next(new AppError('You are not logged in! Please log in to get access.', 401));
     }
 
-    // 2) Verification token
+    // 2) Verification of token
     // decoded object must be the user ID
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
@@ -89,3 +90,14 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.user = currentUser;
     next()
 });
+
+exports.restrictTo = (...roles) => {
+    return (req, res, next) => {
+        // roles is an array ['admin','lead-guide']if()
+        if (!roles.includes(req.user.role)) {
+            return next(new AppError('You do not have permission to perform this action', 403));
+        }
+
+        next();
+    }
+}
