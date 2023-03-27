@@ -41,6 +41,11 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false
+  },
 });
 
 // This functions is going to run right before the new document is going to save
@@ -63,6 +68,12 @@ userSchema.pre('save', async function (next) {
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
+
+userSchema.pre(/^find/, function(next) {
+  // this keyword point to the current query
+  this.find({active:{$ne: false}});
+  next();
+})
 
 // Instance Method : available on all documents of a same collection
 userSchema.methods.correctPassword = async function (

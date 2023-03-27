@@ -1,22 +1,65 @@
 const express = require('express');
-const morgan = require("morgan");
-const AppError = require("./utils/appError");
-const globalErrorHandler = require("./controllers//errorController");
+const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const helmet = require('helmet');
+const hpp = require('hpp');
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers//errorController');
 const tourRouter = require('./routes//tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
-
 const app = express();
 
-// 1) MiddleWares
+// 1) Global  MiddleWares
+
+// Set security https headers
+app.use(helmet());
+
+// Development logging
 if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
+  app.use(morgan('dev'));
 }
 
-app.use(express.static(`${__dirname}/public`))
+// limit requests from same API
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many request',
+});
 
-// middleware
-app.use(express.json());
+app.use('/api', limiter);
+
+// Body pasrser, reading data from body into req.body
+app.use(
+  express.json({
+    limit: '10kb',
+  })
+);
+
+// Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+// Data sanitization against XSS
+app.use(xss());
+
+// Prevent parameter pollution
+app.use(hpp({
+    // whitelist is actually the array of params that we allow to duplication
+    whitelist: [
+        'duration',
+        'ratingsQuantity',
+        'ratingsAverage',
+        'maxGroupSize',
+        'difficulty',
+        'price'
+    ]
+}));
+
+// Serving static files
+app.use(express.static(`${__dirname}/public`));
+
 // Defining middleware
 // The middleware applies to each & every req
 // app.use((req,res, next) => {
@@ -26,34 +69,32 @@ app.use(express.json());
 
 // The middleware applies to each & every req
 app.use((req, res, next) => {
-    req.requestTime = new Date().toISOString();
-    console.log(req.headers);
-    next();
-})
-
-
+  req.requestTime = new Date().toISOString();
+  console.log(req.headers);
+  next();
+});
 
 // mounting routers --- router middlewares
 app.use(`/api/v1/tours`, tourRouter);
 app.use(`/api/v1/users`, userRouter);
 
 app.all('*', (req, res, next) => {
-    // 1) Initial way to implement error handling
-    // res.status(404).json({ 
-    //     status: 'failed',
-    //     message: `Cam't find ${req.originalUrl}`
-    // })
-    // next(); 
+  // 1) Initial way to implement error handling
+  // res.status(404).json({
+  //     status: 'failed',
+  //     message: `Cam't find ${req.originalUrl}`
+  // })
+  // next();
 
-    // 2) Second way to implement error handling
-    // const err = new Error(`Cam't find ${req.originalUrl}`);
-    // err.status = 'fail';
-    // err.statusCode = 404;
-    // next(err);
+  // 2) Second way to implement error handling
+  // const err = new Error(`Cam't find ${req.originalUrl}`);
+  // err.status = 'fail';
+  // err.statusCode = 404;
+  // next(err);
 
-    // Error Implementation using AppErrorClass
+  // Error Implementation using AppErrorClass
 
-    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
 // Error handling middleware
