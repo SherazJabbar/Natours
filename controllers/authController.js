@@ -99,7 +99,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  // 4) Check if user changed password after the JWT (token) was issues
+  // 4) Check if user changed password after the JWT (token) was issued
   if (currentUser.changePasswordAfter(decoded.iat)) {
     return next(
       new AppError('User recently changed password! Please log in again', 401)
@@ -193,7 +193,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   // 3) Update changedPasswordAt property for the user
-  // 4) Log ths uer in , send JWT
+  // 4) Log the user in , send JWT
   createSendToken(user, 200, res);
 });
 

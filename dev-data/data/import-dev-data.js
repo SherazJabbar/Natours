@@ -1,22 +1,22 @@
 const fs = require('fs');
 const mongoose = require('mongoose');
-const dotenv =require('dotenv');
+const dotenv = require('dotenv');
 const Tour = require("../../models/tourModel");
-dotenv.config({path:'./config.env'})
+dotenv.config({ path: './config.env' })
 
 
 
 const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 mongoose.connect(DB, {
-    useNewUrlParser:true,
-    useCreateIndex: true, 
+    useNewUrlParser: true,
+    useCreateIndex: true,
     useFindAndModify: false
 }).then(con => {
     console.log("DB connection successful")
 })
 
 
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'));
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 
 // Import data into db
 const importData = async () => {
@@ -40,9 +40,9 @@ const deleteData = async () => {
     process.exit();
 }
 
-if(process.argv[2] === "--import"){
+if (process.argv[2] === "--import") {
     importData();
-}else if(process.argv[2] === "--delete"){
+} else if (process.argv[2] === "--delete") {
     deleteData();
 }
 
