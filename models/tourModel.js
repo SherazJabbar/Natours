@@ -108,7 +108,7 @@ const tourSchema = new mongoose.Schema({
             type: mongoose.Schema.ObjectId,
             ref: 'User'
         }
-    ]
+    ],
 }, {
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
@@ -118,6 +118,12 @@ const tourSchema = new mongoose.Schema({
 tourSchema.virtual('durationWeeks').get(function () {
     return this.duration / 7;
 });
+
+tourSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField: 'tour',
+    localField: '_id'
+})
 
 // Document middleware: only runs before .save() and .create() command
 // It doesn't work on insertMany(), findOne(), findOneAndUpdate(), findByIdAndUpdate()

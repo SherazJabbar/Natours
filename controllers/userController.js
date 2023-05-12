@@ -1,6 +1,7 @@
 const User = require('../models/userModal');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('./../utils/appError');
+const factory = require("./handlerFactory");
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -10,16 +11,17 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-  return res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users: users,
-    },
-  });
-});
+exports.getAllUsers = factory.getAll(User);
+// exports.getAllUsers = catchAsync(async (req, res, next) => {
+//   const users = await User.find();
+//   return res.status(200).json({
+//     status: 'success',
+//     results: users.length,
+//     data: {
+//       users: users,
+//     },
+//   });
+// });
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create Error if user posts password data
@@ -47,6 +49,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
 
@@ -56,27 +59,35 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getUser = factory.getOne(User);
+// exports.getUser = (req, res) => {
+//   res.status(500).json({
+//     status: 'error',
+//     message: 'Route not implemented',
+//   });
+// };
+
+
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
-    message: 'Route not implemented',
+    message: 'Route not implemented. Please use /Sign Up',
   });
 };
-exports.getUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Route not implemented',
-  });
-};
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Route not implemented',
-  });
-};
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Route not implemented',
-  });
-};
+
+// Do Not update passwords with this
+exports.updateUser = factory.updateOne(User);
+// exports.updateUser = (req, res) => {
+//   res.status(500).json({
+//     status: 'error',
+//     message: 'Route not implemented',
+//   });
+// };
+
+exports.deleteUser = factory.deleteOne(User);
+// exports.deleteUser = (req, res) => {
+//   res.status(500).json({
+//     status: 'error',
+//     message: 'Route not implemented',
+//   });
+// };
