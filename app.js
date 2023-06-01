@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const path = require('path');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
@@ -7,11 +8,19 @@ const helmet = require('helmet');
 const hpp = require('hpp');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers//errorController');
-const tourRouter = require('./routes//tourRoutes');
-const userRouter = require('./routes/userRoutes');
-const reviewRouter = require("./routes/reviewRoutes");
+// const tourRouter = require('./routes//tourRoutes');
+// const userRouter = require('./routes/userRoutes');
+// const reviewRouter = require("./routes/reviewRoutes");
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger-output.json');
+const authController = require('./controllers/authController');
 
 const app = express();
+
+app.set('view engine', 'pug');
+app.set("views", path.join(__dirname, 'views'));
+
+authController.configurePassport();
 
 // 1) Global  MiddleWares
 
@@ -76,10 +85,13 @@ app.use((req, res, next) => {
 });
 
 // mounting routers --- router middlewares
-app.use(`/api/v1/tours`, tourRouter);
-app.use(`/api/v1/users`, userRouter);
-app.use(`/api/v1/reviews`, reviewRouter);
+// app.use(`/api/v1/tours`, tourRouter);
+// app.use(`/api/v1/users`, userRouter);
+// app.use(`/api/v1/reviews`, reviewRouter);
+//for documentation 
+require('./index.js')(app);
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.all('*', (req, res, next) => {
   // 1) Initial way to implement error handling
   // res.status(404).json({

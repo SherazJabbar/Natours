@@ -1,10 +1,22 @@
 const express = require('express');
+const passport = require('passport');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 
 
 const router = express.Router();
 
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// Route for handling the Google OAuth callback
+router.get(
+    '/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    (req, res) => {
+        // Redirect or send a response after successful authentication
+        res.send("Logged In")
+    }
+);
 router.post(`/signup`, authController.signup);
 router.post(`/login`, authController.login);
 router.post(`/forgotPassword`, authController.forgotPassword);

@@ -27,6 +27,11 @@ const userSchema = new mongoose.Schema({
     minLength: 8,
     select: false,
   },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true, // Allow multiple documents to have no value for this field (if not using Google as the sole authentication method)
+  },
   passwordConfirm: {
     type: String,
     required: [true, 'Please confirm your password'],
@@ -69,9 +74,9 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.pre(/^find/, function(next) {
+userSchema.pre(/^find/, function (next) {
   // this keyword point to the current query
-  this.find({active:{$ne: false}});
+  this.find({ active: { $ne: false } });
   next();
 })
 

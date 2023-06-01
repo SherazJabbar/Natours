@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
-    "debug": "ndb server.js"
+    "debug": "ndb server.js",
+    "swagger-autogen": "node ./swagger.js"
   },
   "author": "Sheraz Jabbar",
   "license": "ISC",
@@ -24,8 +25,15 @@
     "ndb": "^1.1.5",
     "nodemailer": "^4.7.0",
     "nodemon": "^2.0.20",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
+    "pug": "^3.0.2",
     "slugify": "^1.6.5",
+    "swagger-ui-express": "^4.6.3",
     "validator": "^13.7.0",
     "xss-clean": "^0.1.1"
+  },
+  "devDependencies": {
+    "swagger-autogen": "^2.23.1"
   }
 }

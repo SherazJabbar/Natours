@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const AppError = require('./../utils/appError');
 const crypto = require('crypto');
 const sendEmail = require('./../utils/email');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -34,6 +36,55 @@ const createSendToken = (user, statusCode, res) => {
     },
   });
 };
+
+exports.configurePassport = () => {
+  console.log("configurePassport")
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: '/api/v1/users/auth/google/callback',
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          // Handle the user data returned by Google
+          // Here, you can create or authenticate the user in your database
+          const existingUser = await User.findOne({ googleId: profile.id });
+          if (existingUser) {
+            // User already exists, return it
+            done(null, existingUser);
+          } else {
+            // Create a new user in the database
+            const newUser = new User({
+              googleId: profile.id,
+              name: profile.displayName,
+              email: profile.emails[0].value,
+            });
+
+            const savedUser = await newUser.save();
+            done(null, savedUser);
+          }
+        } catch (error) {
+          done(error, false);
+        }
+      }
+    )
+  );
+
+  // Serialize and deserialize user
+  passport.serializeUser((user, done) => done(null, user.id));
+
+  passport.deserializeUser(async (id, done) => {
+    try {
+      const user = await User.findById(id);
+      done(null, user);
+    } catch (error) {
+      done(error, null);
+    }
+  });
+}
+
 
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({

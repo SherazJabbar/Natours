@@ -1,0 +1,468 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "My API",
+    "description": "Description",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/api/v1/users/signup": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "role": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "passwordConfirm": {
+                  "example": "any"
+                },
+                "passwordChangedAt": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/v1/users/login": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/v1/users/forgotPassword": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/users/resetPassword/{token}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "password": {
+                  "example": "any"
+                },
+                "passwordConfirm": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/v1/users/updateMyPassword": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "passwordCurrent": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "passwordConfirm": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/v1/users/updateMe": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "password": {
+                  "example": "any"
+                },
+                "passwordConfirm": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/users/deleteMe": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/users/": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      },
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/v1/tours/top-5-cheap": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/v1/tours/tour-stats": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/tours/monthly-plan/{year}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/tours/tours-within/{distance}/center/{latlng}/unit/{unit}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "distance",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "latlng",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "unit",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/tours/distances/{latlng}/unit/{unit}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "latlng",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "unit",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/tours/": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      },
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/v1/tours/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      },
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    }
+  }
+}
