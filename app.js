@@ -3,16 +3,16 @@ const morgan = require('morgan');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
+const cors = require('cors')
 const xss = require('xss-clean');
 const helmet = require('helmet');
 const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers//errorController');
 // const tourRouter = require('./routes//tourRoutes');
 // const userRouter = require('./routes/userRoutes');
 // const reviewRouter = require("./routes/reviewRoutes");
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger-output.json');
 const authController = require('./controllers/authController');
 
 const app = express();
@@ -25,7 +25,7 @@ authController.configurePassport();
 // 1) Global  MiddleWares
 
 // Set security https headers
-app.use(helmet());
+// app.use(helmet());
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {
@@ -42,17 +42,16 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Body pasrser, reading data from body into req.body
-app.use(
-  express.json({
-    limit: '10kb',
-  })
-);
+// Body parser, reading data from body into req.body
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
 
 // Data sanitization against XSS
-app.use(xss());
+// app.use(xss());
 
 // Prevent parameter pollution
 app.use(hpp({
@@ -84,6 +83,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(cors());
 // mounting routers --- router middlewares
 // app.use(`/api/v1/tours`, tourRouter);
 // app.use(`/api/v1/users`, userRouter);
@@ -91,25 +91,25 @@ app.use((req, res, next) => {
 //for documentation 
 require('./index.js')(app);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.all('*', (req, res, next) => {
-  // 1) Initial way to implement error handling
-  // res.status(404).json({
-  //     status: 'failed',
-  //     message: `Cam't find ${req.originalUrl}`
-  // })
-  // next();
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// app.all('*', (req, res, next) => {
+//   // 1) Initial way to implement error handling
+//   // res.status(404).json({
+//   //     status: 'failed',
+//   //     message: `Cam't find ${req.originalUrl}`
+//   // })
+//   // next();
 
-  // 2) Second way to implement error handling
-  // const err = new Error(`Cam't find ${req.originalUrl}`);
-  // err.status = 'fail';
-  // err.statusCode = 404;
-  // next(err);
+//   // 2) Second way to implement error handling
+//   // const err = new Error(`Cam't find ${req.originalUrl}`);
+//   // err.status = 'fail';
+//   // err.statusCode = 404;
+//   // next(err);
 
-  // Error Implementation using AppErrorClass
+//   // Error Implementation using AppErrorClass
 
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
-});
+//   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+// });
 
 // Error handling middleware
 app.use(globalErrorHandler);
