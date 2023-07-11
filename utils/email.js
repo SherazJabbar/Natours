@@ -29,7 +29,7 @@ module.exports = class Email {
   async send(template, subject) {
     // Send the actual email 
     // 1) Render HTML based on a pug template 
-    const html = pug.renderFile(`../views/emails/${template}.pug`, {
+    const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
       firstName: this.firstName,
       url: this.url,
       subject
@@ -49,7 +49,7 @@ module.exports = class Email {
   }
 
   sendWelcome() {
-    this.send('Welcome', 'Welcome to the Natours Family!');
+    this.send('welcome', 'Welcome to the Natours Family!');
   }
 }
 
