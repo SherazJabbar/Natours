@@ -29,7 +29,7 @@ module.exports = class Email {
   async send(template, subject) {
     // Send the actual email 
     // 1) Render HTML based on a pug template 
-    const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
+    const html = pug.renderFile(`${__dirname}/../views/emails/${template}.pug`, {
       firstName: this.firstName,
       url: this.url,
       subject
@@ -39,8 +39,9 @@ module.exports = class Email {
     const mailOptions = {
       from: this.from,
       to: this.to,
+      subject,
       html,
-      text: htmlToText.fromString(html),
+      text: htmlToText.convert(html),
     };
 
     // 3) Create a transport & send email
@@ -48,8 +49,12 @@ module.exports = class Email {
     await this.newTransport().sendMail(mailOptions);
   }
 
-  sendWelcome() {
-    this.send('welcome', 'Welcome to the Natours Family!');
+  async sendWelcome() {
+    await this.send('welcome', 'Welcome to the Natours Family!');
+  }
+
+  async sendPasswordReset() {
+    await this.send('passwordReset', 'Your password reset token (valid for only 10 minutes)')
   }
 }
 
