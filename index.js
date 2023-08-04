@@ -3,6 +3,7 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require("./routes/reviewRoutes");
 const viewRouter = require("./routes/viewRoutes");
+const bookingRouter = require("./routes/bookingRoutes");
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger-output.json');
 
@@ -13,6 +14,7 @@ const routes = (app) => {
     app.use('/api/v1/tours', tourRouter);
     app.use('/api/v1/users', userRouter);
     app.use('/api/v1/reviews', reviewRouter);
+    app.use('/api/v1/bookings', bookingRouter);
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     app.all('*', (req, res, next) => {
         // 1) Initial way to implement error handling
