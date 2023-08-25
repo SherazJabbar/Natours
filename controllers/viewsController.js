@@ -46,6 +46,14 @@ exports.getAccount = (req, res) => {
     });
 };
 
+exports.getMyTours = (req, res, next) => {
+    // 1) Find all bookings
+
+
+    // 2) Find tours with the returned IDs
+}
+
+
 exports.updateUserData = catchAsync(async (req, res, next) => {
     const updatedUser = await User.findByIdAndUpdate(
         req.user.id,
