@@ -14,6 +14,7 @@ const globalErrorHandler = require('./controllers//errorController');
 // const userRouter = require('./routes/userRoutes');
 // const reviewRouter = require("./routes/reviewRoutes");
 const authController = require('./controllers/authController');
+const cors = require('cors')
 
 const app = express();
 
@@ -23,6 +24,10 @@ app.set("views", path.join(__dirname, 'views'));
 authController.configurePassport();
 
 // 1) Global  MiddleWares
+// Implement Cors
+app.use(cors());
+
+app.options('*', cors());
 
 // Set security https headers
 // app.use(helmet());
